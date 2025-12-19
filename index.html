@@ -12,7 +12,7 @@
 <body>
   <div class="wrap">
     <div class="panel">
-      <h1>Grille cible — 5 colonnes × 7 lignes</h1>
+      <h1>Grille cible</h1>
       <div id="grid" class="grid"></div>
       <div class="controls">
         <button id="checkBtn">Vérifier</button>
@@ -21,21 +21,19 @@
         <button id="autoFillBtn" class="secondary">Remplir correctement (démo)</button>
       </div>
       <div class="stats" id="stats">Cartes posées : 0 / 35</div>
-      <div class="footer">Glisser-déposer les cartes depuis la pioche vers la grille. Chaque cellule a un numéro (1→35).
-        Le but : placer chaque carte au numéro correspondant.</div>
+      <div class="footer">Glisser-déposer les cartes depuis la pioche vers la grille. Le but : placer chaque carte au numéro correspondant.</div>
     </div>
 
     <div class="panel" style="max-width:420px;">
-      <h1>Pioche — 35 cartes</h1>
+      <h1>Pioche</h1>
       <div id="pile" class="pile"></div>
-      <div class="footer">Les cartes sont numérotées de 1 à 35 et sont initialement mélangées. Vous pouvez les glisser
-        dans une cellule vide ou échanger avec une carte déjà présente.</div>
+      <div class="footer">Vous pouvez les glisser dans une cellule vide ou échanger avec une carte déjà présente.</div>
     </div>
   </div>
 
   <script>
     // Génère la solution : cellules numérotées 1..35, en lecture ligne par ligne
-    const TOTAL = 35;
+    const TOTAL = 40;
     const grid = document.getElementById('grid');
     const pile = document.getElementById('pile');
     const stats = document.getElementById('stats');

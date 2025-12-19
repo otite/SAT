@@ -13,7 +13,7 @@
     .cell-number{position:absolute;top:6px;left:8px;font-size:12px;color:#7b8a9b}
 
     /* Pioche */
-    .pile{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px;overflow:auto}
+    .pile{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;overflow:auto}
     .card{}
     .card.dragging{opacity:0.5;transform:scale(1.03)}
     .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
@@ -69,4 +69,24 @@
 }
 .card[data-card-id="6"]{
     content: "azerty";
+}
+.card[data-card-id="36"]{
+    background-image : url(./Images/C36.jpg);
+    background-size: cover;
+}
+.card[data-card-id="37"]{
+    background-image : url(./Images/C37.jpg);
+    background-size: cover;
+}
+.card[data-card-id="38"]{
+    background-image : url(./Images/C38.jpg);
+    background-size: cover;
+}
+.card[data-card-id="39"]{
+    background-image : url(./Images/C39.jpg);
+    background-size: cover;
+}
+.card[data-card-id="40"]{
+    background-image : url(./Images/C40.jpg);
+    background-size: cover;
 }
