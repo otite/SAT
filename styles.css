@@ -23,6 +23,8 @@
 
   
 .card {
+      touch-action: none;
+
   aspect-ratio: 0.6;
   background: linear-gradient(180deg, #ffffff, #c9e2fa);
     border-radius: 8px;
