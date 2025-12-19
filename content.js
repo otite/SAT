@@ -33,5 +33,10 @@ var JSONContent = {
     C32 : "Avalanches de plaque sèche friable ou dure. Départs spontanés et déclenchements provoqués possibles",
     C33 : "Avalanches de plaque sèche. Déclenchements provoqués.Déclenchement à distance possible Grandes propagation fréquentes.",
     C34 : "Avalanches de plaque de neige humide ou de neige mouillé sans cohésionPrincipalement départs spontanés",
-    C35 : "Avalanche de neige sèche ou humide toujours spontanéesDéclenchements humains et artificiels très peu probables."
+    C35 : "Avalanche de neige sèche ou humide toujours spontanéesDéclenchements humains et artificiels très peu probables.",
+    C36 : "",
+    C37 : "",
+    C38 : "",
+    C39 : "",
+    C40 : ""
 };

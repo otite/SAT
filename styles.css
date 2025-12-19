@@ -28,7 +28,7 @@
   aspect-ratio: 0.6;
   background: linear-gradient(180deg, #ffffff, #f1f5f9);
     border-radius: 8px;
-    border: 1px solid #e6eef8;
+    border: 1px solid #466d9c;
     align-items: center;
     justify-content: center;
     cursor: grab;
@@ -36,6 +36,10 @@
     max-width: var(--cell-width);
     font-size: .8em;
     word-wrap: break-word;
+}
+.card p {
+  padding: 8px;
+  text-align: center;
 }
 .cell {
   display: flex;

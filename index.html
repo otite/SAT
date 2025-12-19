@@ -13,6 +13,7 @@
   <div class="wrap">
     <div class="panel">
       <h1>Grille cible</h1>
+      <div class="footer">Glisser-déposer les cartes depuis la pioche vers la grille. Le but : placer chaque carte au bon emplacement.</div>
       <div id="grid" class="grid"></div>
       <div class="controls">
         <button id="checkBtn">Vérifier</button>
@@ -21,13 +22,12 @@
         <button id="autoFillBtn" class="secondary">Remplir correctement (démo)</button>
       </div>
       <div class="stats" id="stats">Cartes posées : 0 / 35</div>
-      <div class="footer">Glisser-déposer les cartes depuis la pioche vers la grille. Le but : placer chaque carte au numéro correspondant.</div>
     </div>
 
     <div class="panel" style="max-width:420px;">
       <h1>Pioche</h1>
+
       <div id="pile" class="pile"></div>
-      <div class="footer">Vous pouvez les glisser dans une cellule vide ou échanger avec une carte déjà présente.</div>
     </div>
   </div>
 
@@ -46,7 +46,7 @@
       el.className = 'card';
       el.draggable = true;
       el.dataset.cardId = id;
-      el.textContent = JSONContent["C"+id];
+      el.innerHTML ="<p>" + JSONContent["C"+id]+ "</p>";
 
       el.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', id);
