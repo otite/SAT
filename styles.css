@@ -89,6 +89,7 @@
 .p-green{
     color: green;
 }
+
 .p-red{
     color: red;
 }
@@ -103,4 +104,22 @@
 }
 .p-violet{
     color: violet;
+}
+.row-2{
+    border-color: green;
+}
+.row-3{
+    border-color: red;
+}
+.row-4{
+    border-color: blue;
+}
+.row-5{
+    border-color: black;
+}
+.row-6{
+    border-color: orange;
+}
+.row-7{
+    border-color: violet;
 }

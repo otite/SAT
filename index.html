@@ -60,7 +60,9 @@
       grid.innerHTML = '';
       for (let i = 1; i <= TOTAL; i++) {
         const cell = document.createElement('div');
-        cell.className = 'cell';
+        //un couleur par ligne
+        cell.className = 'cell row-' + Math.ceil(i / 5);
+        
         cell.dataset.cellNumber = i;
 
         const badge = document.createElement('div'); badge.className = 'cell-number'; 
