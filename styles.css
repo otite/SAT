@@ -6,7 +6,7 @@
 
     /* Grille cible */
     .grid{display:grid;grid-template-columns:repeat(5,var(--cell-width));grid-auto-rows:var(--cell-height);gap:var(--gap);padding:12px;background:#fbfdff;border-radius:8px}
-    .cell{background:linear-gradient(0deg,#fff,#fbfbff);border:2px dashed #e3e8f0;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative}
+    .cell{background:linear-gradient(0deg,#fff,#f6f6f6);border:2px dashed #e3e8f0;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative}
     .cell.filled{border-style:solid}
     .cell.correct{outline:4px solid rgba(56,189,248,0.18)}
     .cell.wrong{outline:4px solid rgba(249,115,22,0.12)}
@@ -26,7 +26,7 @@
   
 .card {
   aspect-ratio: 0.6;
-  background: linear-gradient(180deg, #ffffff, #f1f5f9);
+  background: linear-gradient(180deg, #ffffff, #c9e2fa);
     border-radius: 8px;
     border: 1px solid #466d9c;
     align-items: center;
@@ -36,10 +36,14 @@
     max-width: var(--cell-width);
     font-size: .8em;
     word-wrap: break-word;
+        background-position: center;
+    background-size: cover;
+    vertical-align: middle;
 }
 .card p {
   padding: 8px;
   text-align: center;
+  font-weight: bold;
 }
 .cell {
   display: flex;
@@ -53,44 +57,50 @@
 
 .card[data-card-id="1"]{
     background-image : url(./Images/C1.jpg);
-    background-size: cover;
+
 }
 .card[data-card-id="2"]{
     background-image : url(./Images/C2.jpg);
-    background-size: cover;
 }
 .card[data-card-id="3"]{
     background-image : url(./Images/C3.jpg);
-    background-size: cover;
 }
 .card[data-card-id="4"]{
     background-image : url(./Images/C4.jpg);
-    background-size: cover;
 }
 .card[data-card-id="5"]{
     background-image : url(./Images/C5.jpg);
-    background-size: cover;
-}
-.card[data-card-id="6"]{
-    content: "azerty";
 }
 .card[data-card-id="36"]{
     background-image : url(./Images/C36.jpg);
-    background-size: cover;
 }
 .card[data-card-id="37"]{
     background-image : url(./Images/C37.jpg);
-    background-size: cover;
 }
 .card[data-card-id="38"]{
     background-image : url(./Images/C38.jpg);
-    background-size: cover;
 }
 .card[data-card-id="39"]{
     background-image : url(./Images/C39.jpg);
-    background-size: cover;
 }
 .card[data-card-id="40"]{
     background-image : url(./Images/C40.jpg);
-    background-size: cover;
+}
+.p-green{
+    color: green;
+}
+.p-red{
+    color: red;
+}
+.p-blue{
+    color: blue;
+}
+.p-black{
+    color: black;
+}
+.p-orange{
+    color: orange;
+}
+.p-violet{
+    color: violet;
 }

@@ -46,7 +46,7 @@
       el.className = 'card';
       el.draggable = true;
       el.dataset.cardId = id;
-      el.innerHTML ="<p>" + JSONContent["C"+id]+ "</p>";
+      el.innerHTML =JSONContent["C"+id];
 
       el.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', id);
