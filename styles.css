@@ -8,8 +8,8 @@
     .grid{display:grid;grid-template-columns:repeat(5,var(--cell-width));grid-auto-rows:var(--cell-height);gap:var(--gap);padding:12px;background:#fbfdff;border-radius:8px}
     .cell{background:linear-gradient(0deg,#fff,#f6f6f6);border:2px dashed #e3e8f0;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative}
     .cell.filled{border-style:solid}
-    .cell.correct{outline:4px solid rgba(56,189,248,0.18)}
-    .cell.wrong{outline:4px solid rgba(249,115,22,0.12)}
+    .cell.correct{outline:4px solid rgb(15, 174, 0)}
+    .cell.wrong{outline:4px solid rgb(255, 0, 0)}
     .cell-number{position:absolute;top:6px;left:8px;font-size:12px;color:#7b8a9b}
 
     /* Pioche */

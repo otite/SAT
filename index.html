@@ -37,7 +37,7 @@
     const grid = document.getElementById('grid');
     const pile = document.getElementById('pile');
     const stats = document.getElementById('stats');
-
+    
     // État local
     let deck = []; // cartes disponibles dans la pioche (objets)
 
@@ -80,26 +80,35 @@
     function onDropToCell(e) {
       e.preventDefault();
       const id = e.dataTransfer.getData('text/plain');
-      if (!id) return;
+      if (!id){
+        console.log('no id found in dataTransfer');
+        return;
+      }
       const sourceCard = document.querySelector('.card[data-card-id="' + id + '"]');
       const targetCell = e.currentTarget;
 
       // Si cellule contient déjà une carte -> swap
       const existing = targetCell.querySelector('.card');
+      // If source was inside another cell, swap positions
+      // put existing back to pile or swap with source location
+      const sourceCell = sourceCard.closest('.cell');
+      console.log('sourceCell:', sourceCell);
+      if(sourceCell){
+        sourceCell.classList.remove('filled');
+      }
       if (existing) {
-        // put existing back to pile or swap with source location
-        // If source was inside another cell, swap positions
-        const sourceCell = sourceCard.closest('.cell');
         if (sourceCell) {
           sourceCell.appendChild(existing);
           existing.style.width = '';
+          sourceCell.classList.add('filled');
         } else {
           // source from pile -> move existing to pile
           pile.appendChild(existing);
           existing.style.width = '';
+          existing.classList.remove('filled');
         }
       }
-
+      
       // place source card into target cell
       targetCell.appendChild(sourceCard);
       sourceCard.style.width = '100%';
@@ -127,14 +136,33 @@
       updateStats();
     }
 
+    
+  
+    
     // si on drop dans la pile: remet la carte dans la pioche
-    pile.addEventListener('dragover', (e) => e.preventDefault());
+    pile.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const id = e.dataTransfer.getData('text/plain');
+      console.log('dragover pile, id=', id);
+      if (!id) return;
+      const card = document.querySelector('.card[data-card-id="' + id + '"]');
+      const sourceCell = card.closest('.cell');
+      if (sourceCell) {
+        sourceCell.classList.remove('filled');
+      }
+    });
     pile.addEventListener('drop', (e) => {
       e.preventDefault();
       const id = e.dataTransfer.getData('text/plain');
+      console.log ('drop pile, id=', id);
       if (!id) return;
       const card = document.querySelector('.card[data-card-id="' + id + '"]');
       if (card) pile.appendChild(card);
+      const sourceCell = card.closest('.cell');
+      console.log ('sourceCell:', sourceCell);
+      if (sourceCell) {
+        sourceCell.classList.remove('filled');
+      }
       card.style.width = '';
       updateStats();
     });
@@ -262,6 +290,24 @@
     initFirstRowCorrectly();
     lockFirstRow();
     updateStats();
+
+    const cards = document.getElementsByClassName('card');
+    for(var i = 0; i<cards.length; i++){
+      const card = cards[i];
+      console.log('card id=', card.dataset.cardId);
+    }
+    for(var i=0; i<cards.length; i++){
+      const card = cards[i];
+      card.addEventListener('dragstart', (e) => {
+        const id = e.dataTransfer.getData('text/plain');
+      const sourceCell = card.closest('.cell');
+      if (sourceCell) {
+        sourceCell.classList.remove('filled');
+      }
+        card.classList.add('dragging');
+      });
+      card.addEventListener('dragend', () => card.classList.remove('dragging'));
+    }
     // Petit hack : permettre d'échanger en glissant une carte depuis une cellule sur une autre
     // (les événements de dragstart pour les cartes fonctionnent quel que soit leur parent)
 
@@ -273,7 +319,13 @@
 
   touchCard = card;
   touchSourceCell = card.closest(".cell") || null;
-    }, { passive: true });
+      // if(touchSourceCell){
+      //   touchSourceCell.classList.remove('filled');
+      // }
+
+}, { passive: true });
+   
+   
     document.addEventListener('touchend', (e) => {
       if (!touchCard) return;
 
