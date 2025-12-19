@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jeu : Placer 35 cartes sur une grille 5x7</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="./content.js"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <h1>Grille cible — 5 colonnes × 7 lignes</h1>
+      <div id="grid" class="grid"></div>
+      <div class="controls">
+        <button id="checkBtn">Vérifier</button>
+        <button id="resetBtn" class="secondary">Réinitialiser</button>
+        <button id="shuffleBtn" class="secondary">Mélanger les cartes</button>
+        <button id="autoFillBtn" class="secondary">Remplir correctement (démo)</button>
+      </div>
+      <div class="stats" id="stats">Cartes posées : 0 / 35</div>
+      <div class="footer">Glisser-déposer les cartes depuis la pioche vers la grille. Chaque cellule a un numéro (1→35).
+        Le but : placer chaque carte au numéro correspondant.</div>
+    </div>
+
+    <div class="panel" style="max-width:420px;">
+      <h1>Pioche — 35 cartes</h1>
+      <div id="pile" class="pile"></div>
+      <div class="footer">Les cartes sont numérotées de 1 à 35 et sont initialement mélangées. Vous pouvez les glisser
+        dans une cellule vide ou échanger avec une carte déjà présente.</div>
+    </div>
+  </div>
+
+  <script>
+    // Génère la solution : cellules numérotées 1..35, en lecture ligne par ligne
+    const TOTAL = 35;
+    const grid = document.getElementById('grid');
+    const pile = document.getElementById('pile');
+    const stats = document.getElementById('stats');
+
+    // État local
+    let deck = []; // cartes disponibles dans la pioche (objets)
+
+    function makeCard(id) {
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.draggable = true;
+      el.dataset.cardId = id;
+      el.textContent = JSONContent["C"+id];
+
+      el.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', id);
+        el.classList.add('dragging');
+      });
+      el.addEventListener('dragend', () => el.classList.remove('dragging'));
+      return el;
+    }
+
+    function createGrid() {
+      grid.innerHTML = '';
+      for (let i = 1; i <= TOTAL; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.cellNumber = i;
+
+        const badge = document.createElement('div'); badge.className = 'cell-number'; 
+        //badge.textContent = i;
+        cell.appendChild(badge);
+
+        // events
+        cell.addEventListener('dragover', (e) => { e.preventDefault(); });
+        cell.addEventListener('drop', onDropToCell);
+
+        grid.appendChild(cell);
+      }
+    }
+
+    function onDropToCell(e) {
+      e.preventDefault();
+      const id = e.dataTransfer.getData('text/plain');
+      if (!id) return;
+      const sourceCard = document.querySelector('.card[data-card-id="' + id + '"]');
+      const targetCell = e.currentTarget;
+
+      // Si cellule contient déjà une carte -> swap
+      const existing = targetCell.querySelector('.card');
+      if (existing) {
+        // put existing back to pile or swap with source location
+        // If source was inside another cell, swap positions
+        const sourceCell = sourceCard.closest('.cell');
+        if (sourceCell) {
+          sourceCell.appendChild(existing);
+          existing.style.width = '';
+        } else {
+          // source from pile -> move existing to pile
+          pile.appendChild(existing);
+          existing.style.width = '';
+        }
+      }
+
+      // place source card into target cell
+      targetCell.appendChild(sourceCard);
+      sourceCard.style.width = '100%';
+      targetCell.classList.add('filled');
+      updateStats();
+    }
+
+    function initFirstRowCorrectly() {
+      // cellules 1 à 5 = première ligne
+      for (let i = 1; i <= 5; i++) {
+        const cell = document.querySelector(
+          `.cell[data-cell-number='${i}']`
+        );
+        const card = document.querySelector(
+          `.card[data-card-id='${i}']`
+        );
+
+        if (!cell || !card) continue;
+
+        cell.appendChild(card);
+        cell.classList.add("filled");
+        card.style.width = "100%";
+      }
+
+      updateStats();
+    }
+
+    // si on drop dans la pile: remet la carte dans la pioche
+    pile.addEventListener('dragover', (e) => e.preventDefault());
+    pile.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const id = e.dataTransfer.getData('text/plain');
+      if (!id) return;
+      const card = document.querySelector('.card[data-card-id="' + id + '"]');
+      if (card) pile.appendChild(card);
+      card.style.width = '';
+      updateStats();
+    });
+
+    // initialiser la pioche
+    function initDeck(startIndex) {
+      deck = [];
+      for (let i = startIndex; i <= TOTAL; i++) deck.push(i);
+      shuffle(deck);
+      renderPile();
+    }
+
+    function renderPile() {
+      pile.innerHTML = '';
+      deck.forEach(id => {
+        const c = makeCard(id);
+        pile.appendChild(c);
+      });
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function updateStats() {
+      const placed = grid.querySelectorAll('.cell .card').length;
+      stats.textContent = `Cartes posées : ${placed} / ${TOTAL}`;
+    }
+
+    function lockFirstRow() {
+  // cellules 1 à 5
+  for (let i = 1; i <= 5; i++) {
+    const cell = document.querySelector(
+      `.cell[data-cell-number='${i}']`
+    );
+    if (!cell) continue;
+
+    // empêcher drop sur la cellule
+    cell.addEventListener("dragover", e => e.preventDefault(), true);
+    cell.addEventListener("drop", e => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, true);
+
+    // désactiver le drag sur la carte contenue
+    const card = cell.querySelector(".card");
+    if (card) {
+      card.draggable = false;
+      card.style.cursor = "default";
+      card.classList.add("locked");
+    }
+
+    cell.classList.add("locked");
+  }
+}
+
+    // Vérifier la solution
+    document.getElementById('checkBtn').addEventListener('click', () => {
+      let correct = 0;
+      const cells = grid.querySelectorAll('.cell');
+      cells.forEach(cell => {
+        cell.classList.remove('correct', 'wrong');
+        const target = parseInt(cell.dataset.cellNumber, 10);
+        const c = cell.querySelector('.card');
+        if (!c) {
+          cell.classList.add('wrong'); // vide = wrong
+          return;
+        }
+        const cid = parseInt(c.dataset.cardId, 10);
+        if (cid === target) {
+          cell.classList.add('correct');
+          correct++;
+        } else {
+          cell.classList.add('wrong');
+        }
+      });
+      alert(`Résultat : ${correct} / ${TOTAL} correctement placées`);
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      // remettre toutes les cartes dans la pioche dans l'état mélangé initial
+      initDeck(6);
+      // vider grille
+      const cardsInCells = grid.querySelectorAll('.cell .card:not(.locked)');
+      cardsInCells.forEach(c => pile.appendChild(c));
+      grid.querySelectorAll('.cell').forEach(cell => { cell.classList.remove('filled', 'correct', 'wrong'); });
+      initFirstRowCorrectly();
+      lockFirstRow();
+      updateStats();
+    });
+
+    document.getElementById('shuffleBtn').addEventListener('click', () => {
+      // mélanger uniquement la pioche
+      const cards = Array.from(pile.querySelectorAll('.card')).map(el => parseInt(el.dataset.cardId, 10));
+      shuffle(cards);
+      deck = cards;
+      renderPile();
+    });
+
+    document.getElementById('autoFillBtn').addEventListener('click', () => {
+      // Démo : place correctement toutes les cartes automatiquement
+      // vide pile
+      const allCards = Array.from(document.querySelectorAll('.card'));
+      allCards.forEach(c => c.remove());
+      // placer cartes 1..35 dans chaque cellule
+      for (let i = 1; i <= TOTAL; i++) {
+        const card = makeCard(i);
+        card.style.width = '100%';
+        const cell = grid.querySelector(`.cell[data-cell-number='${i}']`);
+        cell.appendChild(card);
+        cell.classList.add('filled');
+      }
+      updateStats();
+    });
+
+    // Autoriser échange lorsque on clique et fait glisser une carte déjà dans une cellule
+    // Autoriser drop from cell to cell works via drag events attached to card
+
+    // Initial setup
+    createGrid();
+    initDeck(1);
+    initFirstRowCorrectly();
+    lockFirstRow();
+    updateStats();
+    // Petit hack : permettre d'échanger en glissant une carte depuis une cellule sur une autre
+    // (les événements de dragstart pour les cartes fonctionnent quel que soit leur parent)
+
+    // Touch support : rendre les cartes cliquables pour déplacer sur mobile
+    let touchCard = null;
+    document.addEventListener('touchstart', (e) => {
+      const t = e.target.closest('.card');
+      if (!t) return;
+      touchCard = t;
+      touchCard.classList.add('dragging');
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      if (!touchCard) return;
+      touchCard.classList.remove('dragging');
+      const touch = e.changedTouches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!el) { touchCard = null; return; }
+      const destCell = el.closest('.cell') || el.closest('#pile');
+      if (destCell) {
+        if (destCell.id === 'pile') pile.appendChild(touchCard);
+        else destCell.appendChild(touchCard);
+        touchCard.style.width = destCell.classList.contains('cell') ? '100%' : '';
+        updateStats();
+      }
+      touchCard = null;
+    }, { passive: true });
+
+  </script>
+</body>
+
+</html>
