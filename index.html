@@ -268,25 +268,39 @@
     // Touch support : rendre les cartes cliquables pour déplacer sur mobile
     let touchCard = null;
     document.addEventListener('touchstart', (e) => {
-      const t = e.target.closest('.card');
-      if (!t) return;
-      touchCard = t;
-      touchCard.classList.add('dragging');
+      const card = e.target.closest(".card");
+  if (!card || card.classList.contains("locked")) return;
+
+  touchCard = card;
+  touchSourceCell = card.closest(".cell") || null;
     }, { passive: true });
     document.addEventListener('touchend', (e) => {
       if (!touchCard) return;
-      touchCard.classList.remove('dragging');
-      const touch = e.changedTouches[0];
-      const el = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (!el) { touchCard = null; return; }
-      const destCell = el.closest('.cell') || el.closest('#pile');
-      if (destCell) {
-        if (destCell.id === 'pile') pile.appendChild(touchCard);
-        else destCell.appendChild(touchCard);
-        touchCard.style.width = destCell.classList.contains('cell') ? '100%' : '';
-        updateStats();
-      }
-      touchCard = null;
+
+  const touch = e.changedTouches[0];
+  const target = document.elementFromPoint(
+    touch.clientX,
+    touch.clientY
+  );
+
+  const destCell = target?.closest(".cell");
+  const destCard = destCell?.querySelector(".card");
+
+  if (destCell && !destCell.classList.contains("locked")) {
+    if (destCard && touchSourceCell) {
+      // 🔁 SWAP
+      touchSourceCell.appendChild(destCard);
+      destCell.appendChild(touchCard);
+    } else {
+      // placement simple
+      destCell.appendChild(touchCard);
+    }
+
+    touchCard.style.width = "100%";
+  }
+
+  touchCard = null;
+  touchSourceCell = null;
     }, { passive: true });
 
   </script>
